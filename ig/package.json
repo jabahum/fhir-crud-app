@@ -1,0 +1,22 @@
+{
+ "name": "fhirapi",
+ "version" : "0.1.0",  
+ "canonical" : "http://lyecdevelopers.com/fhir",
+ "url" : "http://lyecdevelopers.com/fhir",
+ "title" : "Implementation Guide",
+ "description": "Conformance resource for FHIR",
+ "dependencies": {
+    "hl7.fhir.r4.core": "4.0.1"
+ },
+ "keywords": [
+ ],
+ "language": "en",
+ "author": "jabahum",
+ "maintainers": [
+   {
+     "name": "jabahum",
+     "email": "jabajnan8@gmail.com"
+   }
+ ],
+ "license": "CC0-1.0"
+}
