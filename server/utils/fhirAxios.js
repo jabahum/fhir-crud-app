@@ -38,9 +38,9 @@ const fhirAxios = {
       throw new Error( "fhirAxios has already been configured!" )
     } else {
       options = options || {}
-      fhirAxios.options.base = options.base || "http://localhost:8080/hapi/fhir/"
-      fhirAxios.options.username = options.username || ""
-      fhirAxios.options.password = options.password || ""
+      fhirAxios.options.base = options.base || process.env.FHIR_BASE_URL
+      fhirAxios.options.username = options.username || process.env.FHIR_USERNAME
+      fhirAxios.options.password = options.password || process.env.FHIR_PASSWORD
       if ( fhirAxios.options.base.slice(-1) !== "/" ) {
         fhirAxios.options.base += "/"
       }
