@@ -13,9 +13,7 @@ dotenv.config({ path: "./config/config.env" });
 //load error handler
 const errorHandler = require("./middleware/errorHandler");
 
-
-
-
+const config = require("nconf");
 
 // routes
 // auth
@@ -23,6 +21,7 @@ const auth = require("./routes/auth.routes");
 // fhir 
 const fhir = require("./routes/fhir.routes");
 // user
+
 const user = require("./routes/user.routes");
 
 
@@ -60,6 +59,7 @@ app.use(errorHandler);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/fhir", fhir);
 app.use("/api/v1/user", user);
+
 
 // set up server ports
 const PORT = process.env.PORT || 5083;

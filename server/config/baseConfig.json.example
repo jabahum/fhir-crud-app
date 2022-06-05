@@ -1,0 +1,23 @@
+{
+  "resourceType": "Parameters",
+  "id": "lyec-base-config",
+  "meta": {
+    "profile": [
+      "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-parameters-local-config"
+    ]
+  },
+  "parameter": [
+    {
+      "name": "fhir:baseUrl",
+      "valueString": "http://localhost:8080/hapi/fhir"
+    },
+    {
+      "name": "fhir:username",
+      "valueString": "admin"
+    },
+    {
+      "name": "fhir:password",
+      "valueString": "admin"
+    }
+  ]
+}
