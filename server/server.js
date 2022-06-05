@@ -14,6 +14,9 @@ dotenv.config({ path: "./config/config.env" });
 const errorHandler = require("./middleware/errorHandler");
 
 
+
+
+
 // routes
 // auth
 const auth = require("./routes/auth.routes");
@@ -34,6 +37,7 @@ app.use(function (req, res, next) {
     next();
 });
 
+
 //body parser
 app.use(express.json({
     type: ["application/json", "application/fhir+json"],
@@ -44,7 +48,6 @@ app.use(express.urlencoded({
     limit: "50mb"
 }))
 app.use(cookieParser());
-
 
 //log url requests
 app.use(logger);

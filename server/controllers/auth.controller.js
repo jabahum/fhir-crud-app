@@ -2,6 +2,7 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require("../middleware/async");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const fhir = require("../utils/config");
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
@@ -11,7 +12,9 @@ exports.signup = asyncHandler(async (req, res, next) => { });
 // @desc    Login user
 // @route   POST /api/v1/auth/login
 // @access  Public
-exports.login = asyncHandler(async (req, res, next) => { });
+exports.login = asyncHandler(async (req, res, next) => {
+
+});
 
 // @desc    Logout user
 // @route   GET /api/v1/auth/logout
