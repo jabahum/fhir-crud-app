@@ -116,3 +116,21 @@ Test the [hapi-fhir server](http://localhost:8080/hapi) to make sure it's runnin
 ```
 http://localhost:8080/hapi
 ```
+# Back end server
+
+## Before starting
+
+You'll need to run npm install when additional node modules are installed or updated
+and also before starting the first time.
+
+```bash
+cd server/
+npm install
+```
+
+## Development mode
+Run the following to start the server in development mode.
+```bash
+cd server/
+npm run dev
+```
