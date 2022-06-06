@@ -7,11 +7,11 @@ const router = express.Router();
 const { getUsers, getUser, createUser, updateUser, deleteUser } = require("../controllers/user.controller");
 
 
-router.route("/")
+router.route("/Person")
     .get(getUsers)
     .post(createUser);
 
-router.route("/:id")
+router.route("/Person/:id")
     .get(getUser)
     .put(updateUser)
     .delete(deleteUser);

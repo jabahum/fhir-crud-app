@@ -7,19 +7,20 @@ const fhir = require('../utils/config');
 // @route GET /api/v1/fhir
 // @access Private
 exports.getFhirResources = asyncHandler(async (req, res, next) => {
-    fhir.read(req.params.resource).then((resource) => {
-        res.status(200).json({
-            success: true,
-            message: "Successfully fetched all fhir resources",
-            error: "",
-            data: resource
-        });
-    }).catch((err) => {
-        return res.status(400).json({
-            success: false,
-            error: err
-        });
-    })
+    fhir.read(req.params.resource)
+        .then((resource) => {
+            res.status(200).json({
+                success: true,
+                message: "Successfully fetched all fhir resources",
+                error: "",
+                data: resource
+            });
+        }).catch((err) => {
+            return res.status(400).json({
+                success: false,
+                error: err
+            });
+        })
 });
 
 // @desc fetch single fhir

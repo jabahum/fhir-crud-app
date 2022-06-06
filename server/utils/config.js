@@ -12,11 +12,14 @@ nconf.argv()
 let baseConfig = fhirConfig.parseFile('./config/baseConfig.json')
 nconf.add('base', { type: 'literal', store: baseConfig })
 // fhir 
-const fhir = fhirAxios.setOptions({
+fhirAxios.setOptions({
     base: nconf.get('fhir:baseUrl'),
     username: nconf.get('fhir:username'),
     password: nconf.get('fhir:password')
 })
 
 
-module.exports = fhir;
+fhirAxios.fhirAxios = fhirAxios
+
+
+module.exports = fhirAxios;

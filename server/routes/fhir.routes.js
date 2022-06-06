@@ -7,11 +7,11 @@ const router = express.Router();
 
 const { getFhirResources, getFhirResource, createFhirResource, updateFhirResource, deleteFhirResource } = require('../controllers/fhir.controller');
 
-router.route("/")
+router.route("/:resource")
     .get(getFhirResources)
     .post(createFhirResource);
 
-router.route("/:id")
+router.route("/:resource/:id")
     .get(getFhirResource)
     .put(updateFhirResource)
     .delete(deleteFhirResource);
