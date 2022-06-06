@@ -94,7 +94,7 @@ exports.createFhirResource = asyncHandler(async (req, res, next) => {
 // @route PUT /api/v1/fhir/:id
 // @access Private
 exports.updateFhirResource = asyncHandler(async (req, res, next) => {
-    fhir.update(req.params.id, req.body)
+    fhir.update(req.body)
         .then((resource) => {
 
             if (!resource) {
@@ -130,7 +130,7 @@ exports.updateFhirResource = asyncHandler(async (req, res, next) => {
 // @route DELETE /api/v1/fhir/:id
 // @access Private
 exports.deleteFhirResource = asyncHandler(async (req, res, next) => {
-    fhir.delete(req.params.id).then((resource) => {
+    fhir.delete(req.params.resource, req.body.id).then((resource) => {
 
         if (!resource) {
             return res.status(404).json({
