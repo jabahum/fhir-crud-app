@@ -9,14 +9,42 @@
   "parameter": [
     {
       "name": "fhir:baseUrl",
-      "valueString": "http://localhost:8080/hapi/fhir"
+      "valueString": "http://localhost:8080/fhir"
     },
     {
       "name": "fhir:username",
-      "valueString": "admin"
+      "valueString": "hapi"
     },
     {
       "name": "fhir:password",
+      "valueString": "xxxxx"
+    },
+    {
+      "name": "client:email",
+      "valueString": "jabajnan@gmail.com"
+    },
+    {
+      "name": "client:id",
+      "valueString": "xxxxxxx"
+    },
+    {
+      "name": "client:secret",
+      "valueString": "xxxxxxx"
+    },
+    {
+      "name": "client:redirectUri",
+      "valueString": "http://localhost:5082"
+    },
+    {
+      "name": "client:scope",
+      "valueString": "gmail"
+    },
+    {
+      "name": "client:refreshToken",
+      "valueString": "xxxxxxx"
+    },
+    {
+      "name": "client:accessToken",
       "valueString": "admin"
     }
   ]
