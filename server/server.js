@@ -60,7 +60,7 @@ app.use("/api/v1/auth", auth);
 app.use("/api/v1/fhir", fhir);
 app.use("/api/v1/user", user);
 
-
+console.log(config.get("client"));
 // set up server ports
 const PORT = process.env.PORT || 5083;
 
