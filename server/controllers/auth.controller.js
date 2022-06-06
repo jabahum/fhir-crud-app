@@ -45,3 +45,8 @@ exports.resetPassword = asyncHandler(async (req, res, next) => { });
 // @route   PUT /api/v1/auth/changePassword/:id/:token
 // @access  Private
 exports.changePassword = asyncHandler(async (req, res, next) => { });
+
+//@desc    Verify user account
+//@route   GET /api/v1/auth/verify/:id/:token
+//@access  Public
+exports.verifyUser = asyncHandler(async (req, res, next) => { });
