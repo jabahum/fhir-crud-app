@@ -1,0 +1,206 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Location",
+        "meta": {
+          "profile": [
+            "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-jurisdiction"
+          ]
+        },
+        "id": "UG.W",
+        "name": "West",
+        "status": "active",
+        "partOf": {
+          "reference": "Location/UG"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://lyecdevelopers.com/fhir/CodeSystem/lyec-jurisdiction-type",
+                "code": "region"
+              }
+            ],
+            "text": "Region"
+          }
+        ],
+        "physicalType": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/codesystem-location-physical-type.html",
+              "code": "jdn"
+            }
+          ],
+          "text": "Jurisdiction"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/UG.W"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Location",
+        "meta": {
+          "profile": [
+            "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-jurisdiction"
+          ]
+        },
+        "id": "UG.S",
+        "name": "South",
+        "status": "active",
+        "partOf": {
+          "reference": "Location/UG"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://lyecdevelopers.com/fhir/CodeSystem/lyec-jurisdiction-type",
+                "code": "region"
+              }
+            ],
+            "text": "Region"
+          }
+        ],
+        "physicalType": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/codesystem-location-physical-type.html",
+              "code": "jdn"
+            }
+          ],
+          "text": "Jurisdiction"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/UG.S"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Location",
+        "meta": {
+          "profile": [
+            "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-jurisdiction"
+          ]
+        },
+        "id": "UG.CC",
+        "name": "Central",
+        "status": "active",
+        "partOf": {
+          "reference": "Location/UG"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://lyecdevelopers.com/fhir/CodeSystem/lyec-jurisdiction-type",
+                "code": "region"
+              }
+            ],
+            "text": "Region"
+          }
+        ],
+        "physicalType": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/codesystem-location-physical-type.html",
+              "code": "jdn"
+            }
+          ],
+          "text": "Jurisdiction"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/UG.CC"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Location",
+        "meta": {
+          "profile": [
+            "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-jurisdiction"
+          ]
+        },
+        "id": "UG.E",
+        "name": "East",
+        "status": "active",
+        "partOf": {
+          "reference": "Location/UG"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://lyecdevelopers.com/fhir/CodeSystem/lyec-jurisdiction-type",
+                "code": "region"
+              }
+            ],
+            "text": "Region"
+          }
+        ],
+        "physicalType": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/codesystem-location-physical-type.html",
+              "code": "jdn"
+            }
+          ],
+          "text": "Jurisdiction"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/UG.E"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Location",
+        "meta": {
+          "profile": [
+            "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-jurisdiction"
+          ]
+        },
+        "id": "UG.N",
+        "name": "North",
+        "status": "active",
+        "partOf": {
+          "reference": "Location/UG"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://lyecdevelopers.com/fhir/CodeSystem/lyec-jurisdiction-type",
+                "code": "region"
+              }
+            ],
+            "text": "Region"
+          }
+        ],
+        "physicalType": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/codesystem-location-physical-type.html",
+              "code": "jdn"
+            }
+          ],
+          "text": "Jurisdiction"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/UG.N"
+      }
+    }
+  ]
+}
