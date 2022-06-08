@@ -1,0 +1,7 @@
+build/*
+node_modules/*
+fsh-generated
+input-cache
+output
+template
+temp
