@@ -69,29 +69,6 @@ hapi:
         fhir_version: R4
 ```
 
-#### For versions starting with 5.1.0 
-Edit ```src/main/resources/application.yaml``` and update the following values:
-
-```
-spring:
-  datasource:
-    url: 'jdbc:postgresql://localhost:5432/hapi'
-    username: hapi
-    password: PASS
-    driveClassName: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect
-      hibernate.search.default.indexBase=/var/lib/tomcat9/target/lucenefiles
-hapi:
-  fhir:
-    tester:
-      id: home
-      name: iHRIS
-      server_address: http://localhost:8080/hapi/fhir/
-      refuse_to_fetch_third_party_urls: false
-      fhir_version: R4
-```
 
 #### Create war file
 
