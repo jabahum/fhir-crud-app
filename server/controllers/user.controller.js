@@ -135,7 +135,8 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 // @route DELETE /api/v1/user/:id
 // @access Private
 exports.deleteUser = asyncHandler(async (req, res, next) => {
-    fhir.delete("Person", req.body.id).then((resource) => {
+    let id  = req.body.id || req.params.id
+    fhir.delete("Person", id).then((resource) => {
 
         if (!resource) {
             return res.status(404).json({

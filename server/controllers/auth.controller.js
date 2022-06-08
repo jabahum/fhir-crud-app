@@ -3,6 +3,9 @@ const asyncHandler = require("../middleware/async");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const fhir = require("../utils/config");
+const jwt = require("jsonwebtoken");
+
+
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
@@ -11,7 +14,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
 
     let resource = req.body;
 
-    fhir.search("Person", resource.telecom.value)
+    fhir.search("Person", { telecom: "email|" + resource.telecom.value })
         .then((response) => {
 
             // check if user alreadu existssss`
@@ -90,6 +93,100 @@ exports.signup = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.login = asyncHandler(async (req, res, next) => {
 
+    const { email, password } = req.body
+
+    fhir.search("Person", { telecom: "email|" + email })
+        .then((response) => {
+
+            // check if user alreadu existssss`
+            if (response.total = 1) {
+
+                let resource = response.entry.find((resource) => resource.resource !== null).resource
+
+                console.log(JSON.stringify(resource, null, 2))
+
+                // decrypt compare  user password with hashedPassword
+                let details = resource.extension.find(ext =>
+                    ext.url === "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password")
+
+                if (!details) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Password details don't exist in user  ${resource.id}`,
+                        error: "",
+                        data: ""
+                    })
+                }
+                let hash = details.extension.find(ext => ext.url === "password")
+
+                let salt = details.extension.find(ext => ext.url === "salt")
+
+                if (!hash || !hash.valueString || !salt || !salt.valueString) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Hash or salt doesn't exist in user  ${resource.id}`,
+                        error: "",
+                        data: ""
+                    })
+                }
+
+                // generate hash for provided password
+                // generate hashPassword
+                const newPasswordHash = crypto.pbkdf2Sync(password, salt.valueString, 1000, 64, 'sha512').toString('hex')
+
+                if (newPasswordHash == hash.valueString) {
+
+                    // generate Bearer Token
+
+                    const token = jwt.sign({ id: resource.id }, "4a024d70307c5831222ac1d4b8c619ec92c9ade08f18fd1700d74bed39e9c0dfa856f4b80255f5d4cb65f8a9ba71e9658d60d528a1c61eb56256bbe08573d78c", {
+                        expiresIn: "7d"
+                    })
+
+                    if (!token) {
+                        log.error(`Failed to generate token for ${resource.id}`)
+                        return res.status(400).json({
+                            success: false,
+                            message: `Failed to generate token for ${resource.id}`,
+                            error: "",
+                            data: ""
+                        });
+                    }
+
+                    //  prepare the response with token
+                    const options = {
+                        expires: new Date(Number(new Date()) + 315360000000), //cookie expires in 30days from creation
+                        httpOnly: true,
+                    };
+
+                    if (process.env.NODE_ENV === "production") {
+                        options.secure = true;
+                    }
+
+                    return res.status(200).cookie("token", token, options).json({
+                        success: true,
+                        token,
+                        userId: resource.id,
+                    });
+
+                }
+
+                return res.status(400).json({
+                    success: false,
+                    message: `Failed to login check your email or password`,
+                    error: "",
+                    data: " "
+                })
+
+
+            } else {
+                return res.status(400).json({
+                    success: true,
+                    message: `Too many users with ${email}`,
+                    error: "",
+                    data: response
+                })
+            }
+        });
 
 
 });
