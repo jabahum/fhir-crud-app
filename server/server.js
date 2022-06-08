@@ -21,7 +21,6 @@ const auth = require("./routes/auth.routes");
 // fhir 
 const fhir = require("./routes/fhir.routes");
 // user
-
 const user = require("./routes/user.routes");
 
 
