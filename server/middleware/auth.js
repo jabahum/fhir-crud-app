@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("./async");
 const ErrorResponse = require("../utils/errorResponse.js");
+const fhir = require("../utils/config");
+
 // const User = require("../models/user.models");
 
 //protect routes
@@ -24,11 +26,16 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
   try {
     //verify token
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedToken = jwt.verify(token, "4a024d70307c5831222ac1d4b8c619ec92c9ade08f18fd1700d74bed39e9c0dfa856f4b80255f5d4cb65f8a9ba71e9658d60d528a1c61eb56256bbe08573d78c");
 
-    // req.user = await User.findById(decodedToken.id);
+    fhir.read("Person", decodedToken.id)
+      .then((resource) => {
+        req.user = resource
+        next();
 
-    next();
+      }).catch((err) => {
+        return next(new ErrorResponse(`An error occured ${err.message}`))
+      })
 
   } catch (err) {
 

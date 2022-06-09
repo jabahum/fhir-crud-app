@@ -103,8 +103,6 @@ exports.login = asyncHandler(async (req, res, next) => {
 
                 let resource = response.entry.find((resource) => resource.resource !== null).resource
 
-                console.log(JSON.stringify(resource, null, 2))
-
                 // decrypt compare  user password with hashedPassword
                 let details = resource.extension.find(ext =>
                     ext.url === "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password")
@@ -194,12 +192,50 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @desc    Logout user
 // @route   GET /api/v1/auth/logout
 // @access  Private
-exports.logout = asyncHandler(async (req, res, next) => { });
+exports.logout = asyncHandler(async (req, res, next) => {
+    res.cookie('token', null, {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+    });
+    res.status(200).json({ "success": true, msg: 'user logged out!' });
+ });
 
 // @desc    Get current logged in user
 // @route   GET /api/v1/auth/me
 // @access  Private
-exports.getMe = asyncHandler(async (req, res, next) => { });
+exports.getMe = asyncHandler(async (req, res, next) => {
+
+    fhir.read("Person", req.user.id)
+        .then((response) => {
+
+            if (response) {
+                return res.status(200).json({
+                    success: true,
+                    message: `successfully returned ${req.user.id} details`,
+                    error: "",
+                    data: response
+                })
+            }
+
+            return res.status(400).json({
+                success: false,
+                message: `An error occured while returning your details`,
+                error: "",
+                data: ""
+            })
+
+
+
+        }).catch((err) => {
+            return res.status(500).json({
+                success: false,
+                message: `Error returning ${req.user.id} details`,
+                error: err.message,
+                data: ""
+            })
+        });
+
+});
 
 // @desc    Update user details`
 // @route   PUT /api/v1/auth/updateMe

@@ -17,7 +17,7 @@ router.post('/signup', signup);
 router.get('/logout', logout);
 
 // get current logged in user
-router.get('/me', getMe);
+router.get('/me', protect, getMe);
 
 // update user details
 router.put('/updateMe', updateMe);
