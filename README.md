@@ -111,3 +111,7 @@ Run the following to start the server in development mode.
 cd server/
 npm run dev
 ```
+
+## Postman API document
+
+https://documenter.getpostman.com/view/8675398/Uz5MEDqW
