@@ -8,13 +8,13 @@ const { getUsers, getUser, createUser, updateUser, deleteUser } = require("../co
 
 
 router.route("/Person")
-    .get(getUsers)
-    .post(createUser);
+    .get(getUsers, protect)
+    .post(createUser, protect);
 
 router.route("/Person/:id")
-    .get(getUser)
-    .put(updateUser)
-    .delete(deleteUser);
+    .get(getUser, protect)
+    .put(updateUser, protect)
+    .delete(deleteUser, protect);
 
 
 module.exports = router;

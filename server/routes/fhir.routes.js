@@ -8,12 +8,12 @@ const router = express.Router();
 const { getFhirResources, getFhirResource, createFhirResource, updateFhirResource, deleteFhirResource } = require('../controllers/fhir.controller');
 
 router.route("/:resource")
-    .get(getFhirResources)
-    .post(createFhirResource);
+    .get(getFhirResources, protect)
+    .post(createFhirResource, protect);
 
 router.route("/:resource/:id")
-    .get(getFhirResource)
-    .put(updateFhirResource)
-    .delete(deleteFhirResource);
+    .get(getFhirResource, protect)
+    .put(updateFhirResource, protect)
+    .delete(deleteFhirResource, protect);
 
 module.exports = router;
