@@ -4,6 +4,11 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const fhir = require("../utils/config");
 const jwt = require("jsonwebtoken");
+const config = require("nconf")
+
+// get server url
+const baseURL = config.get("server:baseURL")
+
 
 
 
@@ -160,6 +165,16 @@ exports.login = asyncHandler(async (req, res, next) => {
                         options.secure = true;
                     }
 
+                    // send email
+                    // sendEmail(
+                    //     email,
+                    //     "Successfully Logged In",
+                    //     {
+                    //         name: resource.name[0].text,
+                    //     },
+                    //     "../views/welcome.handlebars"
+                    // );
+
                     return res.status(200).cookie("token", token, options).json({
                         success: true,
                         token,
@@ -198,7 +213,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
         httpOnly: true,
     });
     res.status(200).json({ "success": true, msg: 'user logged out!' });
- });
+});
 
 // @desc    Get current logged in user
 // @route   GET /api/v1/auth/me
@@ -245,12 +260,123 @@ exports.updateMe = asyncHandler(async (req, res, next) => { });
 // @desc    Forgot password
 // @route   POST /api/v1/auth/forgotPassword
 // @access  Public
-exports.forgotPassword = asyncHandler(async (req, res, next) => { });
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+
+    const { email } = req.body
+
+    fhir.search("Person", { telecom: "email|" + email })
+        .then((response) => {
+
+            // checking if user exists with email provided
+            if (!(response.total !== null && response.total == 1)) {
+                return res.status(400).json({
+                    success: false,
+                    message: `User with ${email} does not exit`,
+                    error: "",
+                    data: ""
+                })
+            }
+
+            let resource = response.entry
+                .find((resource) => resource.resource !== null).resource
+
+            // check for password reset token attached to the user object
+            let passwordExtension = response.entry
+                .find((resource) => resource.resource !== null).resource.extension
+                .find((ext) => ext.url == "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password")
+
+            if (passwordExtension) {
+                var passwordResetToken = passwordExtension.extension.find((ext) => ext.url == "resetPasswordToken").valueString
+
+                let token = "" || passwordResetToken  // not sure abt this but worthy a try to see what magic comes out of it 
+
+
+                if (passwordResetToken == "PASS") {
+                    // generate password reset  token
+                    const resetSalt = crypto.randomBytes(16).toString('hex')
+                    token = crypto.pbkdf2Sync(resource.id, resetSalt, 1000, 64, 'sha512').toString('hex')
+
+                }
+
+                const url = `${baseURL}/auth/password-reset/${resource.id}/${token}/`;
+
+                // send email to request password reset
+                sendEmail(
+                    email,
+                    "Password Reset",
+                    {
+                        name: resource.name[0].text,
+                        link: url
+                    },
+                    "../views/requestPasswordReset.handlebars"
+                );
+
+                // return response after email sent successfully
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully sent email to your account please verify",
+                    error: "",
+                    data: ""
+                })
+
+
+
+            }
+
+
+
+        }).catch((err) => {
+            return res.status(500).json({
+                success: false,
+                message: `An Error Occured while trying to find user with ${email}`,
+                error: err.message,
+                data: ""
+            })
+        })
+
+});
 
 // @desc    Reset password
 // @route   GET /api/v1/auth/resetPassword/:id/:token
 // @access  Public
-exports.resetPassword = asyncHandler(async (req, res, next) => { });
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+
+    fhir.read("Person", req.params.id)
+        .then((response) => {
+
+            // check if id is valid 
+            if (!response) {
+                return res.status(400).json({
+                    success: false,
+                    message: `User with id ${req.params.id} not found`,
+                    error: "",
+                    data: ""
+                })
+            }
+
+            // verify token and send response
+
+            let passwordExtension = response.extension.find((ext) => ext.url == "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password")
+
+
+
+            // return user object after verify token and id  provided by the user
+            return res.status(200).json({
+                success: true,
+                message: "Token was succeessfully verified",
+                error: "",
+                data: ""
+            })
+
+        }).catch((err) => {
+            return res.status(500).json({
+                success: false,
+                message: `Failed to return user with id ${req.params.id} `,
+                error: err.message,
+                data: ""
+            })
+        });
+});
 
 // @desc    Change password
 // @route   PUT /api/v1/auth/changePassword/:id/:token

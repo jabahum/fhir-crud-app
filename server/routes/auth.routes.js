@@ -23,13 +23,13 @@ router.get('/me', protect, getMe);
 router.put('/updateMe', updateMe);
 
 // forgot password
-router.post('/forgotPassword', forgotPassword);
+router.post('/forgot-password', forgotPassword);
 
 // reset password  token or verify token
-router.get('/resetPassword/:id/:token', resetPassword);
+router.get('/reset-password/:id/:token', resetPassword);
 
 // change password
-router.post('/changePassword/:id/:token', changePassword);
+router.post('/change-password/:id/:token', changePassword);
 
 
 module.exports = router;
