@@ -10,8 +10,6 @@ const config = require("nconf")
 const baseURL = config.get("server:baseURL")
 
 
-
-
 // @desc    Register user
 // @route   POST /api/v1/auth/register
 // @access  Public
@@ -166,14 +164,14 @@ exports.login = asyncHandler(async (req, res, next) => {
                     }
 
                     // send email
-                    // sendEmail(
-                    //     email,
-                    //     "Successfully Logged In",
-                    //     {
-                    //         name: resource.name[0].text,
-                    //     },
-                    //     "../views/welcome.handlebars"
-                    // );
+                    sendEmail(
+                        email,
+                        "Successfully Logged In",
+                        {
+                            name: resource.name[0].text,
+                        },
+                        "../views/welcome.handlebars"
+                    );
 
                     return res.status(200).cookie("token", token, options).json({
                         success: true,
@@ -280,23 +278,15 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
             let resource = response.entry
                 .find((resource) => resource.resource !== null).resource
 
-            // check for password reset token attached to the user object
-            let passwordExtension = response.entry
-                .find((resource) => resource.resource !== null).resource.extension
-                .find((ext) => ext.url == "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password")
+            // generate password reset  token
+            const resetSalt = crypto.randomBytes(16).toString('hex')
+            const token = crypto.pbkdf2Sync(resource.id, resetSalt, 1000, 64, 'sha512').toString('hex')
 
-            if (passwordExtension) {
-                var passwordResetToken = passwordExtension.extension.find((ext) => ext.url == "resetPasswordToken").valueString
+            resource.extension
+                .find((ext) => ext.url == "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password").extension
+                .find((ext) => ext.url == "resetPasswordToken").valueString = token
 
-                let token = "" || passwordResetToken  // not sure abt this but worthy a try to see what magic comes out of it 
-
-
-                if (passwordResetToken == "PASS") {
-                    // generate password reset  token
-                    const resetSalt = crypto.randomBytes(16).toString('hex')
-                    token = crypto.pbkdf2Sync(resource.id, resetSalt, 1000, 64, 'sha512').toString('hex')
-
-                }
+            fhir.update(resource).then((response) => {
 
                 const url = `${baseURL}/auth/password-reset/${resource.id}/${token}/`;
 
@@ -316,12 +306,17 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
                     success: true,
                     message: "Successfully sent email to your account please verify",
                     error: "",
-                    data: ""
+                    data: response
                 })
 
-
-
-            }
+            }).catch((err) => {
+                return res.status(500).json({
+                    success: false,
+                    message: "Failed to update the reset token",
+                    error: err.message,
+                    data: ""
+                })
+            })
 
 
 
@@ -355,18 +350,32 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
             }
 
             // verify token and send response
+            let resetToken = response.extension
+                .find((ext) => ext.url == "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password").extension
+                .find((ext) => ext.url == "resetPasswordToken").valueString
 
-            let passwordExtension = response.extension.find((ext) => ext.url == "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password")
+            // check if user objct has a reset token
+            if (!resetToken) {
+
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid or expired password reset token",
+                    error: "",
+                    data: ""
+                })
+            }
 
 
+            if (req.params.token === resetPasswordToken) {
 
-            // return user object after verify token and id  provided by the user
-            return res.status(200).json({
-                success: true,
-                message: "Token was succeessfully verified",
-                error: "",
-                data: ""
-            })
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully validated  token sent",
+                    error: "",
+                    data: response
+                })
+
+            }
 
         }).catch((err) => {
             return res.status(500).json({
@@ -381,7 +390,99 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 // @desc    Change password
 // @route   PUT /api/v1/auth/changePassword/:id/:token
 // @access  Private
-exports.changePassword = asyncHandler(async (req, res, next) => { });
+exports.changePassword = asyncHandler(async (req, res, next) => {
+    const { newPassword, confirmPassword } = req.body
+    fhir.read("Person", req.params.id)
+        .then((response) => {
+
+            // check if there is a response
+            if (!response) {
+                return res.status(400).json({
+                    success: false,
+                    message: `User with id  ${req.params.id} not found`,
+                    error: "",
+                    data: ""
+                })
+            }
+            // update the new password onto the user
+            let resetToken = response.extension
+                .find((ext) => ext.url == " http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password").extension
+                .find((ext) => ext.url == "resetPasswordToken").valueString
+
+            if (!resetToken) {
+                return res.status(400)
+                    .json({
+                        success: false,
+                        message: "Invalid or expired password reset token",
+                        error: "",
+                        data: ""
+                    })
+            }
+
+            // check if the new password and confirm password match
+            if (newPassword !== confirmPassword) {
+                return res.status(400).json({
+                    success: false,
+                    message: "New password and confirm password do not match",
+                    error: "",
+                    data: ""
+                })
+            }
+
+            // hash the new password
+            let newPasswordSalt = crypto.randomBytes(64).toString('hex')
+            let newHashedPassword = crypto.pbkdf2Sync(newPasswordSalt, newPassword, 1000, 64, 'sha512').toString('hex')
+
+
+            response.extension
+                .find((ext) => ext.url == "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password").extension
+                .find((ext) => ext.url == "password").valueString = newHashedPassword
+
+            response.extension
+                .find((ext) => ext.url == "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password").extension
+                .find((ext) => ext.url == "salt").valueString = newPasswordSalt
+
+            // update the user object
+            fhir.update(response)
+                .then((response) => {
+
+                    sendEmail(
+                        response.telecom[0].value,
+                        "Password Reset Successfully",
+                        {
+                            name: response.name[0].text,
+                        },
+                        "../views/resetPassword.handlebars"
+                    );
+
+                    return res.status(200).json({
+                        success: true,
+                        message: "Password reset successfully",
+                        error: "",
+                        data: response
+                    });
+
+                }).catch((err) => {
+                    return res.status(500).json({
+                        success: false,
+                        message: "Failed to update to the current password",
+                        error: err.message,
+                        data: ""
+                    })
+                })
+
+
+
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                success: false,
+                message: "",
+                error: err.message,
+                data: ""
+            })
+        })
+});
 
 //@desc    Verify user account
 //@route   GET /api/v1/auth/verify/:id/:token
