@@ -11,7 +11,7 @@ exports.getFhirResources = asyncHandler(async (req, res, next) => {
         .then((resource) => {
             res.status(200).json({
                 success: true,
-                message: "Successfully fetched all fhir resources",
+                message: `Successfully fetched all ${req.params.resource} resources`,
                 error: "",
                 data: resource
             });
@@ -41,7 +41,7 @@ exports.getFhirResource = asyncHandler(async (req, res, next) => {
 
             res.status(200).json({
                 success: true,
-                message: "Successfully fetched single fhir resource",
+                message: `Successfully fetched single ${req.params.resource} resource of id ${req.params.id} `,
                 error: "",
                 data: resource
             });

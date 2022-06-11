@@ -9,6 +9,9 @@ const config = require("nconf")
 // get server url
 const baseURL = config.get("server:baseURL")
 
+// email
+const sendEmail = require("../utils/sendEmail")
+
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register

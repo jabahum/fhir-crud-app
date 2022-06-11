@@ -12,11 +12,11 @@ const fs = require("fs");
 const config = require("nconf");
 
 
-const CLIENT_EMAIL = process.env.CLIENT_EMAIL || config.get("client:email");
-const CLIENT_ID = process.env.CLIENT_ID || config.get("client:id");
-const CLIENT_SECRET = process.env.CLIENT_SECRET || config.get("client:secret");
-const REDIRECT_URI = process.env.REDIRECT_URI || config.get("client:redirectUri");
-const REFRESH_TOKEN = process.env.REFRESH_TOKEN || config.get("client:refreshToken");
+const CLIENT_EMAIL = config.get("client:email");
+const CLIENT_ID = config.get("client:id");
+const CLIENT_SECRET = config.get("client:secret");
+const REDIRECT_URI = config.get("client:redirectUri");
+const REFRESH_TOKEN = config.get("client:refreshToken");
 
 
 const sendMail = async (email, subject, payload, template) => {
@@ -64,7 +64,8 @@ const sendMail = async (email, subject, payload, template) => {
   // trigger the sending of the E-mail
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      return next(new ErrorResponse(error, 500));
+
+      return error.message
     }
 
     return info
