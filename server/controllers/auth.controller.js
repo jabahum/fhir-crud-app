@@ -369,7 +369,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
             }
 
 
-            if (req.params.token === resetPasswordToken) {
+            if (req.params.token === resetToken) {
 
                 return res.status(200).json({
                     success: true,
@@ -409,8 +409,9 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
             }
             // update the new password onto the user
             let resetToken = response.extension
-                .find((ext) => ext.url == " http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password").extension
+                .find((ext) => ext.url == "http://lyecdevelopers.com/fhir/StructureDefinition/lyec-password").extension
                 .find((ext) => ext.url == "resetPasswordToken").valueString
+
 
             if (!resetToken) {
                 return res.status(400)
@@ -433,8 +434,8 @@ exports.changePassword = asyncHandler(async (req, res, next) => {
             }
 
             // hash the new password
-            let newPasswordSalt = crypto.randomBytes(64).toString('hex')
-            let newHashedPassword = crypto.pbkdf2Sync(newPasswordSalt, newPassword, 1000, 64, 'sha512').toString('hex')
+            let newPasswordSalt = crypto.randomBytes(16).toString('hex')
+            let newHashedPassword = crypto.pbkdf2Sync(newPassword, newPasswordSalt, 1000, 64, 'sha512').toString('hex')
 
 
             response.extension

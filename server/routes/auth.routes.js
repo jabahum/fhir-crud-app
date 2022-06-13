@@ -26,7 +26,7 @@ router.put('/updateMe', updateMe);
 router.post('/forgot-password', forgotPassword);
 
 // reset password  token or verify token
-router.get('/reset-password/:id/:token', resetPassword);
+router.get('/password-reset/:id/:token', resetPassword);
 
 // change password
 router.post('/change-password/:id/:token', changePassword);
